@@ -10,14 +10,14 @@ shuffle xs = do
   let (left, (a:right)) = splitAt randomPosition xs
   fmap (a:) (shuffle (left ++ right))
 
-finMyNumByIndex :: (Traversable t, Ord t1, Num t1) => Int -> Int -> t Int -> t1 -> Bool
+finMyNumByIndex :: Int -> Int -> [Int] -> Int -> Bool
 finMyNumByIndex index target listOfInts attempts =
   if attempts > 50 then False
   else
     if listOfInts ^?! element (index - 1) == target then True
     else finMyNumByIndex (listOfInts ^?! element (index - 1)) target listOfInts (attempts + 1)
 
-allFound :: (Traversable t, Ord t1, Num t1) => Int -> t Int -> Bool
+allFound :: Int -> [Int] -> Bool
 allFound target listOfInts =
   if target > 100 then True
   else
