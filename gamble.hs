@@ -1,7 +1,6 @@
 module Main where
 
 import System.Random
-import Control.Lens
 
 shuffle :: [a] -> IO [a]
 shuffle [] = return []
@@ -10,21 +9,22 @@ shuffle xs = do
   let (left, (a:right)) = splitAt randomPosition xs
   fmap (a:) (shuffle (left ++ right))
 
-finMyNumByIndex :: Int -> Int -> [Int] -> Int -> Bool
-finMyNumByIndex index target listOfInts attempts =
+findMyNumByIndex :: Int -> Int -> [Int] -> Int -> Bool
+findMyNumByIndex index target listOfInts attempts =
   if attempts > 50 then False
   else
-    if listOfInts ^?! element (index - 1) == target then True
-    else finMyNumByIndex (listOfInts ^?! element (index - 1)) target listOfInts (attempts + 1)
+    let value = listOfInts !! (index - 1)
+    in if value == target then True
+       else findMyNumByIndex value target listOfInts (attempts + 1)
 
 allFound :: Int -> [Int] -> Bool
 allFound target listOfInts =
   if target > 100 then True
   else
-    if finMyNumByIndex target target listOfInts 1 then allFound (target + 1) listOfInts
+    if findMyNumByIndex target target listOfInts 1 then allFound (target + 1) listOfInts
     else False
 
+main :: IO ()
 main = do
   x <- shuffle [1..100]
-  let c =  allFound 1 x
-  print c
+  print (allFound 1 x)
